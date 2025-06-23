@@ -1,16 +1,12 @@
-﻿using Agora.Domain.Abstractions;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace Agora.Domain.Entities
+namespace Agora.Application.DTOs
 {
-    public class Menu : BaseParams
+    public class CreateandUpdateMenuDto
     {
         public string Name { get; set; } = default!;
-
         public decimal Price { get; set; }
-
         public string Description { get; set; } = default!;
-
-        public string ImageUrl { get; set; } = default!;
+        public IFormFile Image { get; set; } = default!;
     }
-
 }

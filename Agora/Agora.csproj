@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Agora.Infrastructure\Agora.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\menus\" />
+  </ItemGroup>
+
 </Project>

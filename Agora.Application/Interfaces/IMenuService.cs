@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Agora.Application.DTOs;
+using Agora.Domain.Abstractions;
 
 namespace Agora.Application.Interfaces
 {
-    internal class IMenuService
+    public interface IMenuService
     {
+        Task<Result<List<MenuDto>>> GetAllAsync();
+        Task<Result<MenuDto>> GetByIdAsync(Guid id);
+        Task<Result<MenuDto>> CreateAsync(CreateandUpdateMenuDto dto);
+        Task<Result<MenuDto>> UpdateAsync(Guid id, CreateandUpdateMenuDto dto);
+        Task<Result<bool>> DeleteAsync(Guid id);
     }
+
 }

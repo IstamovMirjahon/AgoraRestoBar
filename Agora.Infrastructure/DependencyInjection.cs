@@ -24,9 +24,10 @@ namespace Agora.Infrastructure
             });
 
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IMenuRepository, MenuRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
-
+            services.AddScoped<IMenuService, MenuService>();
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             return services;

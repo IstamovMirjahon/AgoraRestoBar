@@ -14,10 +14,11 @@ namespace Agora.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
         }
-        public DbSet<Admin> Admins { get; set; }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return base.SaveChangesAsync(cancellationToken);
         }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Menu> Menus { get; set; }
     }
 }

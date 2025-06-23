@@ -28,6 +28,7 @@ namespace Agora
 
             app.UseAuthorization();
 
+            app.UseStaticFiles();
 
             app.MapControllers();
 
