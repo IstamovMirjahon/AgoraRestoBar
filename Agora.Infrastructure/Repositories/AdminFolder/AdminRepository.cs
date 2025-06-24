@@ -69,7 +69,7 @@ namespace Agora.Infrastructure.Repositories.Admin
             return await _context.Bookings.OrderByDescending(x => x.Id).ToListAsync();
         }
 
-        public async Task<Booking> GetBookingByIdAsync(int id)
+        public async Task<Booking> GetBookingByIdAsync(Guid id)
         {
             var existing = await _context.Bookings.FindAsync(id);
             if (existing == null)

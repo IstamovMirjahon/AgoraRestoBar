@@ -13,7 +13,7 @@ namespace Agora.Application.Interfaces
         Task UpdateAboutAsync(About about);
 
         Task<List<Booking>> GetAllBookingsAsync();
-        Task<Booking> GetBookingByIdAsync(int id);
+        Task<Booking> GetBookingByIdAsync(Guid id);
         Task SaveChangesAsync();
     }
 

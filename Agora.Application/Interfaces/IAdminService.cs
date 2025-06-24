@@ -13,7 +13,7 @@ namespace Agora.Application.Interfaces
         Task UpdateAboutAsync(AboutDto dto);
 
         Task<Result<List<Booking>>> GetBookingsAsync();
-        Task ConfirmBookingAsync(int id, bool isConfirmed);
+        Task ConfirmBookingAsync(Guid id, bool isConfirmed);
     }
 
 

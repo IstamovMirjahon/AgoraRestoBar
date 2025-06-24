@@ -81,7 +81,7 @@ namespace Agora.Application.Services
             return Result<List<Booking>>.Success(top);
         }
 
-        public async Task ConfirmBookingAsync(int id, bool isConfirmed)
+        public async Task ConfirmBookingAsync(Guid id, bool isConfirmed)
         {
             var booking = await _repo.GetBookingByIdAsync(id);
             if (booking != null)
