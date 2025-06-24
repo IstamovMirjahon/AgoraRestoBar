@@ -18,7 +18,7 @@ namespace Agora.Infrastructure.Data
         {
             return base.SaveChangesAsync(cancellationToken);
         }
-        public DbSet<Admin> Admins { get; set; }
+        public DbSet<AdminProfile> Admins { get; set; }
         public DbSet<Menu> Menus { get; set; }
 
         public DbSet<ContactInfo> ContactInfos { get; set; }

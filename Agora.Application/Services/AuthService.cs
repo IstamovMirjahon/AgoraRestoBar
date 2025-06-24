@@ -55,7 +55,7 @@ namespace Agora.Application.Services
             };
         }
         // JWT yaratish
-        private string GenerateJwtToken(Admin admin)
+        private string GenerateJwtToken(AdminProfile admin)
         {
             var keyString = _configuration["Jwt:Key"];
             if (string.IsNullOrEmpty(keyString))

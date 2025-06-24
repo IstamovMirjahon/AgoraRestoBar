@@ -1,6 +1,4 @@
-﻿;
-
-namespace Agora.Application.DTOs
+﻿namespace Agora.Application.DTOs
 {
     public class BookingDto
     {

@@ -1,6 +1,4 @@
-﻿
-using Agora.Application.Interfaces;
-using Agora.Domain.Abstractions;
+﻿using Agora.Application.Interfaces;
 using Agora.Domain.Entities;
 using Agora.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

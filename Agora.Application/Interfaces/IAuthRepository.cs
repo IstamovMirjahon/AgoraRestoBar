@@ -5,8 +5,8 @@ namespace Agora.Application.Interfaces
 {
     public interface IAuthRepository
     {
-        Task<Result<Admin>> GetAdminByUsernameAsync(string username);
-        Task<Result<Admin>> UpdateRefreshTokenAsync(Guid adminId, string refreshToken, DateTime expiry);
-        Task<Result<Admin>> GetAdminByRefreshTokenAsync(string refreshToken);
+        Task<Result<AdminProfile>> GetAdminByUsernameAsync(string username);
+        Task<Result<AdminProfile>> UpdateRefreshTokenAsync(Guid adminId, string refreshToken, DateTime expiry);
+        Task<Result<AdminProfile>> GetAdminByRefreshTokenAsync(string refreshToken);
     }
 }

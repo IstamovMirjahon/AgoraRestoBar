@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Agora.Domain.Entities
 {
-    public class Admin : BaseParams
+    public class AdminProfile : BaseParams
     {
         [Required]
         public required string Username { get; set; }

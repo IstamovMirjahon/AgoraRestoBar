@@ -2,6 +2,7 @@
 using Agora.Application.Services;
 using Agora.Domain.Abstractions;
 using Agora.Infrastructure.Data;
+using Agora.Infrastructure.Repositories.Admin;
 using Agora.Infrastructure.Repositories.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +12,7 @@ namespace Agora.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureRegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection") ??
                 throw new ArgumentNullException(nameof(configuration));
@@ -25,9 +26,11 @@ namespace Agora.Infrastructure
 
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IAdminRepository, AdminRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             return services;
