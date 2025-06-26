@@ -2,6 +2,7 @@
 using Agora.Application.Services;
 using Agora.Domain.Abstractions;
 using Agora.Infrastructure.Data;
+using Agora.Infrastructure.Repositories;
 using Agora.Infrastructure.Repositories.Admin;
 using Agora.Infrastructure.Repositories.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +28,12 @@ namespace Agora.Infrastructure
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddScoped<IBannerRepository, BannerRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IBannerService, BannerService>();
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             return services;
