@@ -3,98 +3,100 @@ using Agora.Application.Interfaces;
 using Agora.Domain.Abstractions;
 using Agora.Domain.Entities;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 
-namespace Agora.Application.Services
+namespace Agora.Application.Services;
+
+public class BannerService : IBannerService
 {
-    public class BannerService : IBannerService
+    private readonly IBannerRepository _bannerRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly IFileService _fileService;
+
+    public BannerService(
+        IBannerRepository bannerRepository,
+        IUnitOfWork unitOfWork,
+        IMapper mapper,
+        IFileService fileService)
     {
-        private readonly IBannerRepository _bannerRepository;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        _bannerRepository = bannerRepository;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _fileService = fileService;
+    }
+    public async Task<Result<List<BannerDto>>> GetAllBannersAsync(CancellationToken cancellationToken = default)
+    {
+        var banners = await _bannerRepository.GetAllAsync(cancellationToken);
+        var result = _mapper.Map<List<BannerDto>>(banners);
+        return Result<List<BannerDto>>.Success(result);
+    }
+    public async Task<Result<BannerDto>> GetBannerByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
+        if (banner is null)
+            return Result<BannerDto>.Failure(new Error("Banner.NotFound", "Banner topilmadi"));
 
-        public BannerService(IBannerRepository bannerRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        var dto = _mapper.Map<BannerDto>(banner);
+        return Result<BannerDto>.Success(dto);
+    }
+    public async Task<Result<BannerDto>> CreateBannerAsync(CreateAndUpdateBannerDto dto, CancellationToken cancellationToken = default)
+    {
+        var imagePath = await _fileService.SaveImageAsync(dto.Image, "banners", cancellationToken);
+
+        var banner = new Banner
         {
-            _bannerRepository = bannerRepository;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+            Title = dto.Title,
+            Description = dto.Description,
+            ImageUrl = imagePath,
+            IsActive = dto.IsActive,
+            CreateDate = DateTime.UtcNow
+        };
 
-        public async Task<IEnumerable<BannerDto>> GetAllBannersAsync(CancellationToken cancellationToken = default)
-        {
-            var banners = await _bannerRepository.GetAllAsync(cancellationToken);
-            return _mapper.Map<IEnumerable<BannerDto>>(banners);
-        }
+        await _bannerRepository.AddAsync(banner, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        public async Task<BannerDto?> GetBannerByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
-            return banner is null ? null : _mapper.Map<BannerDto>(banner);
-        }
+        return Result<BannerDto>.Success(_mapper.Map<BannerDto>(banner));
+    }
+    public async Task<Result<BannerDto>> UpdateBannerAsync(Guid id, CreateAndUpdateBannerDto dto, CancellationToken cancellationToken = default)
+    {
+        var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
+        if (banner is null)
+            return Result<BannerDto>.Failure(new Error("Banner.NotFound", "Banner topilmadi"));
 
-        public async Task<BannerDto> CreateBannerAsync(CreateAndUpdateBannerDto dto, CancellationToken cancellationToken = default)
-        {
-            string imagePath = await SaveImageAsync(dto.Image);
-            var banner = new Banner
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                ImageUrl = imagePath,
-                IsActive = dto.IsActive,
-                CreateDate = DateTime.UtcNow
-            };
+        banner.Title = dto.Title;
+        banner.Description = dto.Description;
+        banner.IsActive = dto.IsActive;
 
-            await _bannerRepository.AddAsync(banner, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        if (dto.Image is not null)
+            banner.ImageUrl = await _fileService.SaveImageAsync(dto.Image, "banners", cancellationToken);
 
-            return _mapper.Map<BannerDto>(banner);
-        }
+        _bannerRepository.Update(banner);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        public async Task<BannerDto> UpdateBannerAsync(Guid id, CreateAndUpdateBannerDto dto, CancellationToken cancellationToken = default)
-        {
-            var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
-            if (banner is null) throw new Exception("Banner not found");
+        return Result<BannerDto>.Success(_mapper.Map<BannerDto>(banner));
+    }
 
-            banner.Title = dto.Title;
-            banner.Description = dto.Description;
-            banner.IsActive = dto.IsActive;
-            if (dto.Image != null)
-                banner.ImageUrl = await SaveImageAsync(dto.Image);
+    public async Task<Result<bool>> DeleteBannerAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
+        if (banner is null)
+            return Result<bool>.Failure(new Error("Banner.NotFound", "Banner topilmadi"));
 
-            _bannerRepository.Update(banner);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        _bannerRepository.Remove(banner);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return Result<bool>.Success(true);
+    }
 
-            return _mapper.Map<BannerDto>(banner);
-        }
+    public async Task<Result<bool>> ToggleBannerStatusAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
+        if (banner is null)
+            return Result<bool>.Failure(new Error("Banner.NotFound", "Banner topilmadi"));
 
-        public async Task<bool> DeleteBannerAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
-            if (banner is null) return false;
-            _bannerRepository.Remove(banner);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
-        }
+        banner.IsActive = !banner.IsActive;
+        _bannerRepository.Update(banner);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        public async Task<bool> ToggleBannerStatusAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var banner = await _bannerRepository.GetByIdAsync(id, cancellationToken);
-            if (banner is null) return false;
-            banner.IsActive = !banner.IsActive;
-            _bannerRepository.Update(banner);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
-        }
-
-        private async Task<string> SaveImageAsync(IFormFile image)
-        {
-            string folder = Path.Combine("wwwroot", "images", "banners");
-            Directory.CreateDirectory(folder);
-            string fileName = Guid.NewGuid() + Path.GetExtension(image.FileName);
-            string filePath = Path.Combine(folder, fileName);
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await image.CopyToAsync(stream);
-            return $"/images/banners/{fileName}";
-        }
+        return Result<bool>.Success(true);
     }
 }

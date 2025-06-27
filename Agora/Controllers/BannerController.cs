@@ -34,7 +34,7 @@ namespace Agora.Controllers
         public async Task<IActionResult> Create([FromForm] CreateAndUpdateBannerDto dto, CancellationToken cancellationToken)
         {
             var banner = await _bannerService.CreateBannerAsync(dto, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { id = banner.Id }, banner);
+            return CreatedAtAction(nameof(GetById), new { id = banner.Value?.Id }, banner);
         }
 
         [HttpPut("{id}")]
@@ -48,15 +48,16 @@ namespace Agora.Controllers
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bannerService.DeleteBannerAsync(id, cancellationToken);
-            return result ? NoContent() : NotFound();
+            return result.IsSuccess ? NoContent() : NotFound(result.Error?.Message);
         }
 
         [HttpPatch("{id}/toggle-status")]
         public async Task<IActionResult> ToggleStatus(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bannerService.ToggleBannerStatusAsync(id, cancellationToken);
-            return result ? Ok() : NotFound();
+            return result.IsSuccess ? Ok() : NotFound(result.Error?.Message);
         }
+
     }
 
 }

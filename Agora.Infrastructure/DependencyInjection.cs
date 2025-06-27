@@ -35,6 +35,9 @@ namespace Agora.Infrastructure
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBannerService, BannerService>();
 
+            services.AddAutoMapper(typeof(IBannerService).Assembly);
+
+
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             return services;
         }

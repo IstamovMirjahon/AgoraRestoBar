@@ -1,4 +1,6 @@
-
+using Agora.Application.Interfaces;
+using Agora.Infrastructure;
+using Agora.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -85,6 +87,7 @@ namespace Agora
 
             builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
 
+            builder.Services.AddScoped<IFileService, FileService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
