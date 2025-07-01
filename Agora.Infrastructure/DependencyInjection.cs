@@ -29,14 +29,15 @@ namespace Agora.Infrastructure
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<IBannerRepository, BannerRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBannerService, BannerService>();
+            services.AddScoped<IBookingService, BookingService>();
 
             services.AddAutoMapper(typeof(IBannerService).Assembly);
-
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             return services;

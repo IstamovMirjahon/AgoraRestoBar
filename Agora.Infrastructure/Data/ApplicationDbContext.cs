@@ -1,6 +1,7 @@
 ﻿using Agora.Domain.Abstractions;
 using Agora.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Agora.Infrastructure.Data
 {
