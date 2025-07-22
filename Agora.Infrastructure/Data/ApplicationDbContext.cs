@@ -5,12 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Agora.Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext, IUnitOfWork
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContext) : DbContext(dbContext), IUnitOfWork
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContext)
-            : base(dbContext)
-        {
-        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -25,5 +21,6 @@ namespace Agora.Infrastructure.Data
         public DbSet<ContactInfo> ContactInfos { get; set; }
         public DbSet<About> Abouts { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<UserToken> UserTokens { get; set; }
     }
 }

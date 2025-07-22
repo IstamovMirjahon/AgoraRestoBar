@@ -1,5 +1,7 @@
 ﻿using Agora.Application.DTOs;
+using Agora.Application.DTOs.Errors;
 using Agora.Application.Interfaces;
+using Agora.Domain.Abstractions;
 using Agora.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -10,84 +12,96 @@ using System.Text;
 
 namespace Agora.Application.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService(
+        IAuthRepository _authRepository,
+        IConfiguration _configuration) : IAuthService
     {
-        private readonly IAuthRepository _authRepository;
-        private readonly IConfiguration _configuration;
-
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration)
+        public async Task<Result<AuthResponseDto>> LoginAsync(AdminLoginDto dto)
         {
-            _authRepository = authRepository;
-            _configuration = configuration;
-        }
-        public async Task<AuthResponseDto> LoginAsync(AdminLoginDto dto)
-        {
-            var admin = await _authRepository.GetAdminByUsernameAsync(dto.Username);
-            if (admin == null || Hash(dto.Password) != admin.Value?.PasswordHash)
-                throw new UnauthorizedAccessException("Login yoki parol noto‘g‘ri");
+            if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
+                return Result<AuthResponseDto>.Failure(new("Auth.InvalidInput", "Username or password is required."));
 
-            var accessToken = GenerateJwtToken(admin.Value);
-            var refreshToken = GenerateRefreshToken();
+            var adminResult = await _authRepository.GetAdminByUsernameAsync(dto.Username);
+            if (adminResult.IsFailure || adminResult.Value == null)
+                return Result<AuthResponseDto>.Failure(new("Auth.Invalid", "Login yoki parol noto‘g‘ri"));
 
-            await _authRepository.UpdateRefreshTokenAsync(admin.Value.Id, refreshToken, DateTime.UtcNow.AddDays(7));
+            if (Hash(dto.Password) != adminResult.Value.PasswordHash)
+                return Result<AuthResponseDto>.Failure(new("Auth.Invalid", "Login yoki parol noto‘g‘ri"));
 
-            return new AuthResponseDto
+            var userToken = GenerateUserToken(adminResult.Value.Id);
+
+            await _authRepository.CreateOrUpdateToken(adminResult.Value.Id, userToken);
+
+            return Result<AuthResponseDto>.Success(new AuthResponseDto
             {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
+                AccessToken = userToken.AccessToken,
+                RefreshToken = userToken.RefreshToken
+            });
         }
-        public async Task<AuthResponseDto> RefreshTokenAsync(string refreshToken)
+        public async Task<Result<bool>> LogoutAsync(Guid userId)
         {
-            var admin = await _authRepository.GetAdminByRefreshTokenAsync(refreshToken);
-            if (admin.Value == null)
-                throw new UnauthorizedAccessException("Refresh token noto‘g‘ri yoki muddati tugagan");
+            var token = await _authRepository.GetTokenByUserIdAsync(userId);
+            if (token.IsFailure || token.Value == null)
+                return Result<bool>.Failure(new Error("Logout.NotFound", "Token topilmadi."));
 
-            var newAccessToken = GenerateJwtToken(admin.Value);
-            var newRefreshToken = GenerateRefreshToken();
+            await _authRepository.DeleteUserTokenAsync(userId);
+            return Result<bool>.Success(true);
+        }
 
-            await _authRepository.UpdateRefreshTokenAsync(admin.Value.Id, newRefreshToken, DateTime.UtcNow.AddDays(7));
+        public async Task<Result<AuthResponseDto>> RefreshTokenAsync(string refreshToken)
+        {
+            var tokenResult = await _authRepository.GetAdminByRefreshTokenAsync(refreshToken);
+            if (tokenResult.IsFailure || tokenResult.Value == null)
+                return Result<AuthResponseDto>.Failure(new("Token.Invalid", "Refresh token is invalid or expired."));
 
-            return new AuthResponseDto
+            var newToken = GenerateUserToken(tokenResult.Value.UserId);
+            await _authRepository.CreateOrUpdateToken(tokenResult.Value.UserId, newToken);
+
+            return Result<AuthResponseDto>.Success(new AuthResponseDto
             {
-                AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
-            };
+                AccessToken = newToken.AccessToken,
+                RefreshToken = newToken.RefreshToken
+            });
         }
         // JWT yaratish
-        private string GenerateJwtToken(AdminProfile admin)
+        private string GenerateJwtToken(Guid userId)
         {
-            var keyString = _configuration["Jwt:Key"];
-            if (string.IsNullOrEmpty(keyString))
-                throw new InvalidOperationException("JWT key is missing in configuration.");
+            var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key is missing in configuration.");
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)), SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
-             new Claim(ClaimTypes.Name, admin.Username),
-             new Claim("role", "admin")
+                new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new("userid", userId.ToString())
             };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(10),
-                signingCredentials: creds);
+                signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        private string GenerateRefreshToken()
-        {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        }
+        private string GenerateRefreshToken() => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
         private string Hash(string password)
         {
             using var sha = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
-            return Convert.ToBase64String(sha.ComputeHash(bytes));
+            return Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(password)));
+        }
+        private UserToken GenerateUserToken(Guid userId)
+        {
+            return new UserToken
+            {
+                UserId = userId,
+                AccessToken = GenerateJwtToken(userId),
+                AccessTokenExpiration = DateTime.UtcNow.AddHours(10),
+                RefreshToken = GenerateRefreshToken(),
+                RefreshTokenExpiration = DateTime.UtcNow.AddHours(11)
+            };
         }
     }
 }
