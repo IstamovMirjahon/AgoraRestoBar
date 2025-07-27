@@ -19,6 +19,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var banners = await _bannerService.GetAllBannersAsync(cancellationToken);
+            if (!banners.IsSuccess)
+            {
+                return BadRequest(banners.Error?.Message);
+            }
             return Ok(banners);
         }
 
@@ -34,6 +38,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> Create([FromForm] CreateAndUpdateBannerDto dto, CancellationToken cancellationToken)
         {
             var banner = await _bannerService.CreateBannerAsync(dto, cancellationToken);
+            if (!banner.IsSuccess)
+            {
+                return BadRequest(banner.Error?.Message);
+            }
             return CreatedAtAction(nameof(GetById), new { id = banner.Value?.Id }, banner);
         }
 
@@ -41,6 +49,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> Update(Guid id, [FromForm] CreateAndUpdateBannerDto dto, CancellationToken cancellationToken)
         {
             var banner = await _bannerService.UpdateBannerAsync(id, dto, cancellationToken);
+            if (!banner.IsSuccess)
+            {
+                return BadRequest(banner.Error?.Message);
+            }
             return Ok(banner);
         }
 
@@ -48,6 +60,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bannerService.DeleteBannerAsync(id, cancellationToken);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error?.Message);
+            }
             return result.IsSuccess ? NoContent() : NotFound(result.Error?.Message);
         }
 
@@ -55,6 +71,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> ToggleStatus(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bannerService.ToggleBannerStatusAsync(id, cancellationToken);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error?.Message);
+            }
             return result.IsSuccess ? Ok() : NotFound(result.Error?.Message);
         }
 
