@@ -18,19 +18,33 @@ namespace Agora.Controllers
         }
 
         [HttpGet("contact")]
-        public async Task<IActionResult> GetContact() =>
-            Ok(await _service.GetContactAsync());
-
+        public async Task<IActionResult> GetContact()
+        {
+            var result = await _service.GetContactAsync();
+            if (result == null)
+            {
+                return NotFound("Contact information not found.");
+            }
+            return Ok(result);
+        }
         [HttpPut("contact")]
         public async Task<IActionResult> UpdateContact([FromBody] ContactInfoDto dto)
         {
             await _service.UpdateContactAsync(dto);
+
             return NoContent();
         }
-
         [HttpGet("about")]
-        public async Task<IActionResult> GetAbout() =>
-            Ok(await _service.GetAboutAsync());
+        public async Task<IActionResult> GetAbout()
+        {
+            var result = await _service.GetAboutAsync();
+            if (result == null)
+            {
+                return NotFound("About information not found.");
+            }
+            return Ok(result);
+        }
+            
 
         [HttpPut("about")]
         public async Task<IActionResult> UpdateAbout([FromBody] AboutDto dto)
@@ -40,8 +54,15 @@ namespace Agora.Controllers
         }
 
         [HttpGet("bookings")]
-        public async Task<IActionResult> GetBookings() =>
-            Ok(await _service.GetBookingsAsync());
+        public async Task<IActionResult> GetBookings()
+        {
+            var result = await _service.GetBookingsAsync();
+            if (result == null || !result.IsSuccess)
+            {
+                return NotFound("No bookings found.");
+            }
+            return Ok(result);
+        }
 
         [HttpPost("bookings/confirm")]
         public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingDto dto)
