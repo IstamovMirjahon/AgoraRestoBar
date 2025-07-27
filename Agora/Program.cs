@@ -1,3 +1,4 @@
+using Agora.Application.DTOs.Errors;
 using Agora.Application.Interfaces;
 using Agora.Infrastructure;
 using Agora.Services;
@@ -86,6 +87,8 @@ namespace Agora
             });
 
             builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
+            builder.Services.AddScoped<ResponseSerializer>();
+
 
             builder.Services.AddScoped<IFileService, FileService>();
             var app = builder.Build();

@@ -29,6 +29,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _menuService.GetByIdAsync(id);
+            if (result.IsFailure)
+            {
+                return NotFound(result.Error?.Message);
+            }
             return result.IsSuccess
                 ? Ok(result.Value)
                 : NotFound(result.Error?.Message);
@@ -38,6 +42,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> Create([FromForm] CreateandUpdateMenuDto dto)
         {
             var result = await _menuService.CreateAsync(dto);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error?.Message);
+            }
             return result.IsSuccess
                 ? Ok(result.Value)
                 : BadRequest(result.Error?.Message);
@@ -47,6 +55,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> Update(Guid id, [FromForm] CreateandUpdateMenuDto dto)
         {
             var result = await _menuService.UpdateAsync(id, dto);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error?.Message);
+            }
             return result.IsSuccess
                 ? Ok(result.Value)
                 : NotFound(result.Error?.Message);
@@ -56,6 +68,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _menuService.DeleteAsync(id);
+            if (result.IsFailure)
+            {
+                return NotFound(result.Error?.Message);
+            }
             return result.IsSuccess
                 ? NoContent()
                 : NotFound(result.Error?.Message);

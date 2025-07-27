@@ -19,6 +19,10 @@ namespace Agora.Controllers
         public async Task<IActionResult> Create([FromBody] CreateBookingDto dto, CancellationToken cancellationToken)
         {
             var result = await _bookingService.CreateAsync(dto, cancellationToken);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error?.Message);
+            }
             return result.IsSuccess ? Ok(new { message = "Buyurtmangiz qabul qilindi!" }) : BadRequest(result.Error?.Message);
         }
     }
