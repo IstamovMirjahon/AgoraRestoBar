@@ -28,10 +28,8 @@ namespace Agora
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
             });
 
-            builder.WebHost.ConfigureKestrel(options =>
-            {
-                options.ListenAnyIP(5043); // shu portni ishlatadi
-            });
+            builder.WebHost.UseUrls("http://0.0.0.0:5050");
+
 
 
             // JWT autentifikatsiya tizimini sozlash
