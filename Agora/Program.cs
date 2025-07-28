@@ -28,7 +28,7 @@ namespace Agora
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
             });
 
-            builder.WebHost.UseUrls("http://0.0.0.0:5050");
+            builder.WebHost.UseUrls("http://0.0.0.0:5043");
 
 
 
