@@ -1,69 +1,47 @@
-﻿using Agora.Application.DTOs.Errors;
-using Agora.Application.Interfaces;
+﻿using Agora.Application.Interfaces;
 using Agora.Infrastructure;
 using Agora.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Agora
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services
+builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    public class Program
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
-            // Add services to the container.
-            builder.Services.AddControllers().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-            });
+// Project-specific services
+builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
+builder.Services.AddScoped<IFileService, FileService>();
 
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddOpenApi(); // Agar siz OpenAPI uchun maxsus extension ishlatayotgan bo‘lsangiz
+var app = builder.Build();
 
-            // CORS sozlamalari
-            builder.Services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(policy =>
-                {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
-            });
+// Middleware
+app.UseStaticFiles();
+// app.UseHttpsRedirection(); // Agar HTTPS ishlatilmayotgan bo‘lsa, o‘chirib qo‘ying
 
-            // Kestrel port sozlamasi
-            builder.WebHost.ConfigureKestrel(options =>
-            {
-                options.ListenAnyIP(5043); // HTTP
-            });
+app.UseCors();
+app.UseAuthorization();
 
-            // Service-lar
-            builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
-            builder.Services.AddScoped<IFileService, FileService>();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-            var app = builder.Build();
+app.MapControllers();
 
-            // Middleware tartibi muhim
-            app.UseStaticFiles();
-
-            // ⚠️ HTTPS yo‘naltirishni o‘chirib qo‘yamiz, agar SSL ishlatilmasa
-            // app.UseHttpsRedirection();
-
-            app.UseCors(); // CORS doim avval
-
-            app.UseAuthorization();
-
-            app.UseSwagger();
-            app.UseSwaggerUI();
-
-            app.MapOpenApi(); // Optional
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
-}
+app.Run();
