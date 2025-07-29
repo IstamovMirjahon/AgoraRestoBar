@@ -25,13 +25,11 @@ namespace Agora.Infrastructure
                 options.UseNpgsql(connectionString);
             });
 
-            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<IBannerRepository, BannerRepository>();
             services.AddScoped<IBookingRepository, BookingRepository>();
 
-            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IMenuService, MenuService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBannerService, BannerService>();

@@ -1,12 +1,11 @@
 ﻿using Agora.Application.DTOs;
 using Agora.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Agora.Controllers
 {
     [ApiController]
-    [Route("admin/menu")]
+    [Route("api/admin/menus")]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
@@ -16,6 +15,7 @@ namespace Agora.Controllers
             _menuService = menuService;
         }
 
+        // GET /api/admin/menus?lang=uz
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string lang = "uz")
         {
@@ -23,6 +23,7 @@ namespace Agora.Controllers
             return result.IsSuccess ? Ok(result.Value) : Problem(result.Error?.Message);
         }
 
+        // GET /api/admin/menus/{id}?lang=uz
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id, [FromQuery] string lang = "uz")
         {
@@ -30,6 +31,7 @@ namespace Agora.Controllers
             return result.IsSuccess ? Ok(result.Value) : NotFound(result.Error?.Message);
         }
 
+        // POST /api/admin/menus
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateandUpdateMenuDto dto)
         {
@@ -37,6 +39,7 @@ namespace Agora.Controllers
             return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error?.Message);
         }
 
+        // PUT /api/admin/menus/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromForm] CreateandUpdateMenuDto dto)
         {
@@ -44,6 +47,7 @@ namespace Agora.Controllers
             return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error?.Message);
         }
 
+        // DELETE /api/admin/menus/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -51,5 +55,4 @@ namespace Agora.Controllers
             return result.IsSuccess ? NoContent() : NotFound(result.Error?.Message);
         }
     }
-
 }

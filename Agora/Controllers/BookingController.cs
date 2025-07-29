@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Agora.Controllers
 {
-    [Route("booking")]
     [ApiController]
+    [Route("api/bookings")]
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
@@ -15,6 +15,7 @@ namespace Agora.Controllers
             _bookingService = bookingService;
         }
 
+        // POST /api/bookings
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBookingDto dto, CancellationToken cancellationToken)
         {
@@ -23,7 +24,21 @@ namespace Agora.Controllers
             {
                 return BadRequest(result.Error?.Message);
             }
-            return result.IsSuccess ? Ok(new { message = "Buyurtmangiz qabul qilindi!" }) : BadRequest(result.Error?.Message);
+
+            return Ok(new { message = "Buyurtmangiz qabul qilindi!" });
+        }
+
+        // GET /api/bookings
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var result = await _bookingService.GetAllAsync(cancellationToken);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error?.Message);
+            }
+
+            return Ok(result.Value);
         }
     }
 }

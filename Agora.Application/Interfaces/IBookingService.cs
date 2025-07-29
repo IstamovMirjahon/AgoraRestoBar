@@ -6,5 +6,6 @@ namespace Agora.Application.Interfaces
     public interface IBookingService
     {
         Task<Result<bool>> CreateAsync(CreateBookingDto dto, CancellationToken cancellationToken = default);
+        Task<Result<List<BookingDto>>> GetAllAsync(CancellationToken cancellationToken = default);
     }
 }

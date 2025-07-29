@@ -2,20 +2,15 @@
 using Agora.Application.Interfaces;
 using Agora.Domain.Abstractions;
 using Agora.Domain.Entities;
+using AutoMapper;
 
 namespace Agora.Application.Services
 {
-    public class BookingService : IBookingService
+    public class BookingService
+        (IBookingRepository _bookingRepository,
+        IUnitOfWork _unitOfWork,
+        IMapper _mapper) : IBookingService
     {
-        private readonly IBookingRepository _bookingRepository;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public BookingService(IBookingRepository bookingRepository, IUnitOfWork unitOfWork)
-        {
-            _bookingRepository = bookingRepository;
-            _unitOfWork = unitOfWork;
-        }
-
         public async Task<Result<bool>> CreateAsync(CreateBookingDto dto, CancellationToken cancellationToken = default)
         {
             var booking = new Booking
@@ -31,6 +26,20 @@ namespace Agora.Application.Services
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result<bool>.Success(true);
+        }
+
+        public Task<Result<List<BookingDto>>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            var bookings = _bookingRepository.GetAllAsync();
+
+            if (bookings is null)
+            {
+                return Task.FromResult(Result<List<BookingDto>>.Failure(new Error("Booking.NotFound", "No bookings found.")));
+            }
+            var bookingDtos =  _mapper.Map<List<BookingDto>>(bookings);
+
+
+            return Task.FromResult(Result<List<BookingDto>>.Success(bookingDtos));
         }
     }
 }
