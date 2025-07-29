@@ -1,4 +1,4 @@
-using Agora.Application.DTOs.Errors;
+﻿using Agora.Application.DTOs.Errors;
 using Agora.Application.Interfaces;
 using Agora.Infrastructure;
 using Agora.Services;
@@ -15,25 +15,16 @@ namespace Agora
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
-            builder.Services.AddSwaggerGen();
-
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
             });
 
-            builder.WebHost.ConfigureKestrel(options =>
-            {
-                options.ListenAnyIP(5043); // HTTP
-              
-            });
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddOpenApi(); // Agar siz OpenAPI uchun maxsus extension ishlatayotgan bo‘lsangiz
 
-
-            // CORS sozlamalari - Hamma kelayotgan so'rovlarni ruxsat berish
+            // CORS sozlamalari
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
@@ -44,28 +35,32 @@ namespace Agora
                 });
             });
 
-            builder.Services.AddEndpointsApiExplorer();
-           
+            // Kestrel port sozlamasi
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(5043); // HTTP
+            });
+
+            // Service-lar
             builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
-            
-
-
             builder.Services.AddScoped<IFileService, FileService>();
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-        
-                app.MapOpenApi();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            
+            // Middleware tartibi muhim
+            app.UseStaticFiles();
 
-            app.UseHttpsRedirection();
+            // ⚠️ HTTPS yo‘naltirishni o‘chirib qo‘yamiz, agar SSL ishlatilmasa
+            // app.UseHttpsRedirection();
+
+            app.UseCors(); // CORS doim avval
 
             app.UseAuthorization();
 
-            app.UseStaticFiles();
-            app.UseCors();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            app.MapOpenApi(); // Optional
             app.MapControllers();
 
             app.Run();
