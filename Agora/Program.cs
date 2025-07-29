@@ -26,11 +26,11 @@ namespace Agora
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
             });
 
-            //builder.WebHost.ConfigureKestrel(options =>
-            //{
-            //    options.ListenAnyIP(5043); // HTTP
-            //    options.ListenAnyIP(7160);
-            //});
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(5043); // HTTP
+              
+            });
 
 
             // CORS sozlamalari - Hamma kelayotgan so'rovlarni ruxsat berish
