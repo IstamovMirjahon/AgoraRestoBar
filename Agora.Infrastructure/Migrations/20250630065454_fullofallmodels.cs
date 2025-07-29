@@ -102,24 +102,7 @@ namespace Agora.Infrastructure.Migrations
                     table.PrimaryKey("PK_ContactInfos", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Menus",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    ImageUrl = table.Column<string>(type: "text", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DeleteDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Menus", x => x.Id);
-                });
+         
         }
 
         /// <inheritdoc />

@@ -2,11 +2,10 @@
 
 namespace Agora.Application.DTOs
 {
-    public class CreateandUpdateMenuDto
-    {
-        public string Name { get; set; } = default!;
-        public decimal Price { get; set; }
-        public string Description { get; set; } = default!;
-        public IFormFile Image { get; set; } = default!;
-    }
+   public class CreateandUpdateMenuDto
+{
+    public decimal Price { get; set; }
+    public IFormFile Image { get; set; } = default!;
+    public List<MenuTranslationDto> Translations { get; set; } = new();
+}
 }

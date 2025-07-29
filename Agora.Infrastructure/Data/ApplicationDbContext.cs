@@ -1,7 +1,9 @@
 ﻿using Agora.Domain.Abstractions;
 using Agora.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Configuration;
 
 namespace Agora.Infrastructure.Data
 {
@@ -23,4 +25,5 @@ namespace Agora.Infrastructure.Data
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<UserToken> UserTokens { get; set; }
     }
+
 }
