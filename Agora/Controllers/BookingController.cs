@@ -40,8 +40,8 @@ namespace Agora.Controllers
 
             return Ok(result.Value);
         }
-        // PUT /api/bookings/{id}/toggle-confirmation
-        [HttpPut("{id}/toggle-confirmation")]
+        // PUT /api/bookings/{id}
+        [HttpPut("{id}")]
         public async Task<IActionResult> ToggleConfirmation(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bookingService.ToggleConfirmationAsync(id, cancellationToken);

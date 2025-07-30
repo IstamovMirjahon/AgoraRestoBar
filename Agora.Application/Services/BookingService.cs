@@ -37,11 +37,18 @@ namespace Agora.Application.Services
             {
                 return Result<List<BookingDto>>.Failure(new Error("Booking.NotFound", "No bookings found."));
             }
-            var bookingDtos =  _mapper.Map<List<BookingDto>>(bookings);
 
+            // 🔽 Oxirgi qo‘shilganlar tepada bo‘lishi uchun tartiblash
+            var orderedBookings = bookings
+                .OrderByDescending(b => b.CreateDate) // yoki b.Id agar CreatedAt yo‘q bo‘lsa
+                .ToList();
+
+            var bookingDtos = _mapper.Map<List<BookingDto>>(orderedBookings);
 
             return Result<List<BookingDto>>.Success(bookingDtos);
         }
+
+
         public async Task<Result<bool>> ToggleConfirmationAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var booking = await _bookingRepository.GetByIdAsync(id, cancellationToken);
