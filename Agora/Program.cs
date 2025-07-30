@@ -7,7 +7,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -16,7 +16,18 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
+
+// Controllers va JSON sozlamalar
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+});
+
+// Kestrel HTTP port sozlovi
 builder.WebHost.UseUrls("http://0.0.0.0:5043");
+
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -27,21 +38,24 @@ builder.Services.AddCors(options =>
     });
 });
 
-
+// Custom service'lar
 builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
 builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
+// Middlewarelar
 app.UseCors();
-// app.UseHttpsRedirection(); // HTTPS kerak bo‘lmasa o‘chirilsin
+// HTTPS yo‘q, shuning uchun quyidagini ishlatmaysiz:
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Agora v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Agora API v1");
+    c.RoutePrefix = "swagger"; // bu URLni aniq qiladi
 });
 
 app.UseStaticFiles();
