@@ -44,35 +44,4 @@ app.UseSwaggerUI();
 
 app.MapControllers();
 
-<<<<<<< HEAD
-            builder.Services.AddEndpointsApiExplorer();
-           
-            builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
-            
-
-
-            builder.Services.AddScoped<IFileService, FileService>();
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-        
-                app.MapOpenApi();
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            
-
-            //app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            app.UseStaticFiles();
-            app.UseCors();
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
-}
-=======
 app.Run();
->>>>>>> 8b89bfc0267b7205baff2f6087499cfe92695353
