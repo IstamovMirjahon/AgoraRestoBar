@@ -28,18 +28,18 @@ namespace Agora.Application.Services
             return Result<bool>.Success(true);
         }
 
-        public Task<Result<List<BookingDto>>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<List<BookingDto>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var bookings = _bookingRepository.GetAllAsync();
+            var bookings = await _bookingRepository.GetAllAsync();
 
             if (bookings is null)
             {
-                return Task.FromResult(Result<List<BookingDto>>.Failure(new Error("Booking.NotFound", "No bookings found.")));
+                return Result<List<BookingDto>>.Failure(new Error("Booking.NotFound", "No bookings found."));
             }
             var bookingDtos =  _mapper.Map<List<BookingDto>>(bookings);
 
 
-            return Task.FromResult(Result<List<BookingDto>>.Success(bookingDtos));
+            return Result<List<BookingDto>>.Success(bookingDtos);
         }
     }
 }
