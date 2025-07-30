@@ -41,7 +41,7 @@ namespace Agora.Infrastructure.Repositories.Admin
 
         public async Task<About> GetAboutAsync()
         {
-            var top = await _context.Abouts.FirstOrDefaultAsync();
+            var top = await _context.Abouts.OrderBy(x=>x.Id).FirstOrDefaultAsync();
             if (top == null)
             {
                 throw new KeyNotFoundException("About information not found.");
