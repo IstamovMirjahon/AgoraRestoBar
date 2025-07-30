@@ -16,10 +16,7 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(5043); // HTTP
-});
+builder.WebHost.UseUrls("http://0.0.0.0:5043");
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -29,6 +26,7 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
 
 builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
 builder.Services.AddScoped<IFileService, FileService>();
