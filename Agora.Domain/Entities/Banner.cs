@@ -6,7 +6,8 @@ namespace Agora.Domain.Entities
     {
         public string Title { get; set; } = default!;
         public string Description { get; set; } = default!;
-        public string ImageUrl { get; set; } = default!;
+        public string? ImageUrl { get; set; } = default!;
+        public string? VideoUrl { get; set; }
         public bool IsActive { get; set; } = true;
     }
 }

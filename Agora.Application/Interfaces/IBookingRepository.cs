@@ -6,5 +6,8 @@ namespace Agora.Application.Interfaces
     {
         Task AddAsync(Booking booking, CancellationToken cancellationToken = default);
         Task<List<Booking>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<Booking?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+
     }
 }

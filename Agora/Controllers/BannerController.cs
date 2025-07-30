@@ -64,7 +64,7 @@ namespace Agora.Controllers
         }
 
         // PATCH /api/admin/banners/{id}/toggle-status
-        [HttpPatch("{id}/toggle-status")]
+        [HttpPut("{id}/toggle-status")]
         public async Task<IActionResult> ToggleStatus(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bannerService.ToggleBannerStatusAsync(id, cancellationToken);

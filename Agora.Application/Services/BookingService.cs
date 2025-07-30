@@ -19,7 +19,8 @@ namespace Agora.Application.Services
                 Phone = dto.Phone,
                 ReservationTime = DateTime.UtcNow,
                 IsConfirmed = false,
-                CreateDate = DateTime.UtcNow
+                CreateDate = DateTime.UtcNow,
+                UpdateDate = DateTime.UtcNow
             };
 
             await _bookingRepository.AddAsync(booking, cancellationToken);
@@ -41,5 +42,19 @@ namespace Agora.Application.Services
 
             return Result<List<BookingDto>>.Success(bookingDtos);
         }
+        public async Task<Result<bool>> ToggleConfirmationAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var booking = await _bookingRepository.GetByIdAsync(id, cancellationToken);
+            if (booking == null)
+            {
+                return Result<bool>.Failure(new Error("Booking.NotFound", "Booking not found."));
+            }
+
+            booking.IsConfirmed = !booking.IsConfirmed;
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return Result<bool>.Success(true);
+        }
+
     }
 }

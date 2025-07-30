@@ -41,15 +41,23 @@ public class BannerService : IBannerService
     }
     public async Task<Result<BannerDto>> CreateBannerAsync(CreateAndUpdateBannerDto dto, CancellationToken cancellationToken = default)
     {
-        var imagePath = await _fileService.SaveImageAsync(dto.Image, "banners", cancellationToken);
+        var imagePath = dto.Image is not null
+            ? await _fileService.SaveFileAsync(dto.Image, "banners", cancellationToken)
+            : null;
+
+        var videoPath = dto.Video is not null
+            ? await _fileService.SaveFileAsync(dto.Video, "videos", cancellationToken)
+            : null;
 
         var banner = new Banner
         {
             Title = dto.Title,
             Description = dto.Description,
             ImageUrl = imagePath,
+            VideoUrl = videoPath,
             IsActive = dto.IsActive,
-            CreateDate = DateTime.UtcNow
+            CreateDate = DateTime.UtcNow,
+            UpdateDate = DateTime.UtcNow
         };
 
         await _bannerRepository.AddAsync(banner, cancellationToken);
@@ -63,14 +71,25 @@ public class BannerService : IBannerService
         if (banner is null)
             return Result<BannerDto>.Failure(new Error("Banner.NotFound", "Banner topilmadi"));
 
-        banner.Title = dto.Title;
-        banner.Description = dto.Description;
-        banner.IsActive = dto.IsActive;
+        var imagePath = dto.Image is not null
+            ? await _fileService.SaveFileAsync(dto.Image, "banners", cancellationToken)
+            : null;
 
-        if (dto.Image is not null)
-            banner.ImageUrl = await _fileService.SaveImageAsync(dto.Image, "banners", cancellationToken);
+        var videoPath = dto.Video is not null
+            ? await _fileService.SaveFileAsync(dto.Video, "videos", cancellationToken)
+            : null;
 
-        _bannerRepository.Update(banner);
+        var bannerResult = new Banner
+        {
+            Title = dto.Title,
+            Description = dto.Description,
+            ImageUrl = imagePath,
+            VideoUrl = videoPath,
+            IsActive = dto.IsActive,
+            UpdateDate = DateTime.UtcNow
+        };
+
+        _bannerRepository.Update(bannerResult);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result<BannerDto>.Success(_mapper.Map<BannerDto>(banner));

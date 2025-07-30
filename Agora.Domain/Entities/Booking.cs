@@ -8,7 +8,7 @@ namespace Agora.Domain.Entities
         public string? FullName { get; set; }
         public string? Phone { get; set; }
         public DateTime ReservationTime { get; set; }
-        public bool IsConfirmed { get; set; }
+        public bool IsConfirmed { get; set; } = false;
     }
 
 }

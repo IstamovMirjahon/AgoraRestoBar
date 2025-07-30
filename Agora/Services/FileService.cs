@@ -13,18 +13,19 @@ public class FileService : IFileService
         _env = env;
     }
 
-    public async Task<string> SaveImageAsync(IFormFile image, string folder, CancellationToken cancellationToken = default)
+    public async Task<string> SaveFileAsync(IFormFile file, string folder, CancellationToken cancellationToken = default)
     {
         string baseFolder = Path.Combine(_env.WebRootPath, folder);
         if (!Directory.Exists(baseFolder))
             Directory.CreateDirectory(baseFolder);
 
-        string fileName = Guid.NewGuid() + Path.GetExtension(image.FileName);
+        string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
         string fullPath = Path.Combine(baseFolder, fileName);
 
         using var stream = new FileStream(fullPath, FileMode.Create);
-        await image.CopyToAsync(stream, cancellationToken);
+        await file.CopyToAsync(stream, cancellationToken);
 
         return $"/{folder}/{fileName}".Replace("\\", "/");
     }
+
 }

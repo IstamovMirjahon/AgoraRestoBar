@@ -7,5 +7,7 @@ namespace Agora.Application.Interfaces
     {
         Task<Result<bool>> CreateAsync(CreateBookingDto dto, CancellationToken cancellationToken = default);
         Task<Result<List<BookingDto>>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<Result<bool>> ToggleConfirmationAsync(Guid id, CancellationToken cancellationToken = default);
+
     }
 }

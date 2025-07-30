@@ -24,5 +24,10 @@ namespace Agora.Infrastructure.Repositories
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
+        public async Task<Booking?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Bookings.FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+        }
+
     }
 }
