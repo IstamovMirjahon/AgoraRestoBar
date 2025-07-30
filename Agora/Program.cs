@@ -20,10 +20,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
 });
 
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(5043); // HTTP
-}); 
+builder.WebHost.UseUrls("http://0.0.0.0:5043", "https://0.0.0.0:7160");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
