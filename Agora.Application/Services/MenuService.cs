@@ -21,19 +21,21 @@ namespace Agora.Application.Services
             try
             {
                 var menus = await _repo.GetAllAsync();
-                var menuDtos = menus.Select(menu => new MenuDto
-                {
-                    Id = menu.Id,
-                    NameEn = menu.menuNameEn,
-                    NameRu = menu.menuNameRu,
-                    NameUz = menu.menuNameUz,
-                    Category = menu.MenuCategory,
-                    DescriptionEn = menu.DescriptionEn,
-                    DescriptionRu = menu.DescriptionRu,
-                    DescriptionUz = menu.DescriptionUz,
-                    ImageUrl = menu.ImageUrl,
-                    Price = menu.Price
-                }).ToList();
+                var menuDtos = menus
+                    .OrderByDescending(menu => menu.CreateDate) // Eng yangi menyular birinchi
+                    .Select(menu => new MenuDto
+                    {
+                        Id = menu.Id,
+                        NameEn = menu.menuNameEn,
+                        NameRu = menu.menuNameRu,
+                        NameUz = menu.menuNameUz,
+                        Category = menu.MenuCategory,
+                        DescriptionEn = menu.DescriptionEn ?? "",
+                        DescriptionRu = menu.DescriptionRu ?? "",
+                        DescriptionUz = menu.DescriptionUz ?? "",
+                        ImageUrl = menu.ImageUrl,
+                        Price = menu.Price
+                    }).ToList();
 
                 return Result<List<MenuDto>>.Success(menuDtos);
             }
@@ -151,6 +153,16 @@ namespace Agora.Application.Services
                 var menu = await _repo.GetByIdAsync(id);
                 if (menu == null)
                     return Result<bool>.Failure(new Error("Menu.NotFound", "Menu topilmadi"));
+
+                // Rasm faylini o‘chirish
+                if (!string.IsNullOrEmpty(menu.ImageUrl))
+                {
+                    var imagePath = Path.Combine("wwwroot", menu.ImageUrl.TrimStart('/'));
+                    if (File.Exists(imagePath))
+                    {
+                        File.Delete(imagePath);
+                    }
+                }
 
                 _repo.Remove(menu);
                 await _unit.SaveChangesAsync();
