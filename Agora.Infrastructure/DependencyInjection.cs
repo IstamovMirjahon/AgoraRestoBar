@@ -36,6 +36,7 @@ namespace Agora.Infrastructure
             services.AddScoped<IBookingService, BookingService>();
 
             services.AddAutoMapper(typeof(IBannerService).Assembly);
+            services.AddAutoMapper(typeof(IBookingService).Assembly);
 
             services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
             return services;
