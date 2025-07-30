@@ -123,8 +123,7 @@ namespace Agora.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "ContactInfos");
 
-            migrationBuilder.DropTable(
-                name: "Menus");
+           
         }
     }
 }

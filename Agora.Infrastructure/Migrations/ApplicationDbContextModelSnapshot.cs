@@ -165,6 +165,15 @@ namespace Agora.Infrastructure.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DescriptionEn")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DescriptionRu")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DescriptionUz")
+                        .HasColumnType("text");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
@@ -172,71 +181,31 @@ namespace Agora.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("MenuCategory")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("menuNameEn")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("menuNameRu")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("menuNameUz")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Menus");
-                });
-
-            modelBuilder.Entity("Agora.Domain.Entities.MenuTranslation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LanguageCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("MenuId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MenuId");
-
-                    b.ToTable("MenuTranslation");
-                });
-
-            modelBuilder.Entity("Agora.Domain.Entities.MenuTranslation", b =>
-                {
-                    b.HasOne("Agora.Domain.Entities.Menu", "Menu")
-                        .WithMany("Translations")
-                        .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Menu");
-                });
-
-            modelBuilder.Entity("Agora.Domain.Entities.Menu", b =>
-                {
-                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }

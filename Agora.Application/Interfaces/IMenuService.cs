@@ -5,10 +5,9 @@ namespace Agora.Application.Interfaces
 {
     public interface IMenuService
     {
-        Task<Result<List<MenuDto>>> GetAllAsync(string languageCode);
-        Task<Result<MenuDto>> GetByIdAsync(Guid id, string languageCode);
-        Task<Result<MenuDto>> CreateAsync(CreateandUpdateMenuDto dto);
-        Task<Result<MenuDto>> UpdateAsync(Guid id, CreateandUpdateMenuDto dto);
+        Task<Result<List<MenuDto>>> GetAllAsync();
+        Task<Result<MenuDto>> CreateAsync(CreateUpdateMenuDto dto);
+        Task<Result<MenuDto>> UpdateAsync(Guid id, CreateUpdateMenuDto dto);
         Task<Result<bool>> DeleteAsync(Guid id);
     }
 
