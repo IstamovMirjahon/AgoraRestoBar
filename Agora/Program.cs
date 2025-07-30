@@ -16,7 +16,10 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
-builder.WebHost.UseUrls("http://0.0.0.0:5043");
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5043); // HTTP
+});
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
