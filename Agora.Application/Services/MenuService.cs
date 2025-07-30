@@ -93,8 +93,24 @@ namespace Agora.Application.Services
                 if (menu == null)
                     return Result<MenuDto>.Failure(new Error("Menu.NotFound", "Menu topilmadi"));
 
-                var imageUrl = await SaveImageAsync(dto.Image);
+                // Agar yangi rasm yuklangan bo‘lsa, rasmni saqlash
+                string? imageUrl = menu.ImageUrl; // Eski rasmni saqlab qolamiz
+                if (dto.Image != null)
+                {
+                    // Eski rasmni o‘chirish (agar mavjud bo‘lsa)
+                    if (!string.IsNullOrEmpty(menu.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine("wwwroot", menu.ImageUrl.TrimStart('/'));
+                        if (File.Exists(oldImagePath))
+                        {
+                            File.Delete(oldImagePath);
+                        }
+                    }
+                    // Yangi rasmni saqlash
+                    imageUrl = await SaveImageAsync(dto.Image);
+                }
 
+                // Ma‘lumotlarni yangilash
                 menu.menuNameUz = dto.menuNameUz;
                 menu.menuNameEn = dto.menuNameEn;
                 menu.menuNameRu = dto.menuNameRu;

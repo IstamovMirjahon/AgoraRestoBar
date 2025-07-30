@@ -12,6 +12,6 @@ namespace Agora.Application.DTOs
         public string? DescriptionRu { get; set; }
         public string MenuCategory { get; set; } = default!;
         public decimal Price { get; set; }
-        public IFormFile Image { get; set; } = default!;
+        public IFormFile? Image { get; set; }
     }
 }
