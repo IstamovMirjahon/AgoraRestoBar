@@ -8,24 +8,15 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
-builder.Services.AddOpenApi();
-
-
-
-
-// Add services
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Agora API",
+        Version = "v1"
+    });
 });
-
 builder.WebHost.UseUrls("http://0.0.0.0:5043");
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -35,23 +26,23 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-builder.Services.AddEndpointsApiExplorer();
-// Project-specific services
+
 builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
 builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
-// Middleware
-
-// app.UseHttpsRedirection(); // Agar HTTPS ishlatilmayotgan bo‘lsa, o‘chirib qo‘ying
-
 app.UseCors();
+// app.UseHttpsRedirection(); // HTTPS kerak bo‘lmasa o‘chirilsin
+
 app.UseAuthorization();
-app.UseHttpsRedirection();
+
 app.UseSwagger();
-app.UseSwaggerUI();
-app.MapOpenApi();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Agora v1");
+});
+
 app.UseStaticFiles();
 app.MapControllers();
 
