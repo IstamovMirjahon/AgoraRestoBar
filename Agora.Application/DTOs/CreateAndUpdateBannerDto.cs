@@ -6,8 +6,7 @@ namespace Agora.Application.DTOs
     {
         public string Title { get; set; } = default!;
         public string Description { get; set; } = default!;
-        public IFormFile? Image { get; set; } = default;
-        public IFormFile? Video { get; set; } = default;
-        public bool IsActive { get; set; } = true;
+        public IFormFile? MediaUrl { get; set; }
+        public bool IsActive { get; set; }
     }
 }

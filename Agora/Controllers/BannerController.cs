@@ -46,9 +46,7 @@ namespace Agora.Controllers
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bannerService.DeleteBannerAsync(id, cancellationToken);
-            return !result.IsSuccess
-                ? BadRequest(result.Error?.Message)
-                : NoContent();
+            return result.IsSuccess ? Ok(new { success = true }) : NotFound(result.Error);
         }
 
         // PUT /api/admin/banner/{id}
