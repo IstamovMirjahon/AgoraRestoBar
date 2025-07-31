@@ -24,7 +24,12 @@ public class BannerService : IBannerService
     public async Task<Result<List<BannerDto>>> GetAllBannersAsync(CancellationToken cancellationToken = default)
     {
         var banners = await _bannerRepository.GetAllAsync(cancellationToken);
-        var result = banners.Select(MapToDto).ToList();
+
+        var result = banners
+            .OrderByDescending(b => b.CreateDate) // Tartiblash
+            .Select(MapToDto)
+            .ToList();
+
         return Result<List<BannerDto>>.Success(result);
     }
 
@@ -137,6 +142,34 @@ public class BannerService : IBannerService
         return Result<bool>.Success(true);
     }
 
+    public async Task<Result<List<ActiveBannerDto>>> OnlyActiveBannersAsync(CancellationToken cancellationToken = default)
+    {
+        var banners = await _bannerRepository.GetAllAsync(cancellationToken);
+
+        var activeBanners = banners
+            .Where(b => b.IsActive)
+            .OrderByDescending(b => b.CreateDate)
+            .Select(b => new ActiveBannerDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                Description = b.Description,
+                MediaUrl = b.MediaUrl,
+                MediaType = GetMediaType(b.MediaUrl),
+                UpdateDate = b.UpdateDate.ToLocalTime()
+            })
+            .ToList();
+
+        return Result<List<ActiveBannerDto>>.Success(activeBanners);
+    }
+
+    private static string GetMediaType(string mediaUrl)
+    {
+        var extension = Path.GetExtension(mediaUrl).ToLowerInvariant();
+        return extension == ".mp4" ? "video" : "rasm";
+    }
+
+
     // Qo‘lda mapping funksiyasi
     private static BannerDto MapToDto(Banner banner)
     {
@@ -145,6 +178,7 @@ public class BannerService : IBannerService
             Id = banner.Id,
             Title = banner.Title,
             Description = banner.Description,
+            UpdateDate = banner.UpdateDate.ToLocalTime(),
             MediaUrl = banner.MediaUrl,
             IsActive = banner.IsActive
         };

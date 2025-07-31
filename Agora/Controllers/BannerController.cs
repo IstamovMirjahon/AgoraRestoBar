@@ -25,6 +25,16 @@ namespace Agora.Controllers
                 : Ok(banners);
         }
 
+        // GET /api/admin/banner
+        [HttpGet("active")]
+        public async Task<IActionResult> OnlyActiveBanners(CancellationToken cancellationToken)
+        {
+            var banners = await _bannerService.OnlyActiveBannersAsync(cancellationToken);
+            return !banners.IsSuccess
+                ? BadRequest(banners.Error?.Message)
+                : Ok(banners);
+        }
+
         // POST /api/admin/banner
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateAndUpdateBannerDto dto, CancellationToken cancellationToken)

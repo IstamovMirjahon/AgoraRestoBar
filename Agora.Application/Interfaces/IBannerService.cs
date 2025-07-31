@@ -9,6 +9,7 @@ namespace Agora.Application.Interfaces
         Task<Result<BannerDto>> CreateBannerAsync(CreateAndUpdateBannerDto bannerDto, CancellationToken cancellationToken = default);
         Task<Result<BannerDto>> UpdateBannerAsync(Guid id, CreateAndUpdateBannerDto bannerDto, CancellationToken cancellationToken = default);
         Task<Result<bool>> DeleteBannerAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Result<List<ActiveBannerDto>>> OnlyActiveBannersAsync(CancellationToken cancellationToken = default);
         Task<Result<bool>> ToggleBannerStatusAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }
