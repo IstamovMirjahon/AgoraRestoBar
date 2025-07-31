@@ -22,32 +22,6 @@ namespace Agora.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Agora.Domain.Entities.About", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Abouts");
-                });
-
             modelBuilder.Entity("Agora.Domain.Entities.Banner", b =>
                 {
                     b.Property<Guid>("Id")
@@ -65,7 +39,6 @@ namespace Agora.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -80,6 +53,9 @@ namespace Agora.Infrastructure.Migrations
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -110,47 +86,12 @@ namespace Agora.Infrastructure.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("ReservationTime")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.ToTable("Bookings");
-                });
-
-            modelBuilder.Entity("Agora.Domain.Entities.ContactInfo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContactInfos");
                 });
 
             modelBuilder.Entity("Agora.Domain.Entities.Menu", b =>

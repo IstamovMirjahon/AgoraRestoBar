@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agora.Controllers
 {
     [ApiController]
-    [Route("api/admin/banners")]
+    [Route("api/banner")]
     public class BannerController : ControllerBase
     {
         private readonly IBannerService _bannerService;
@@ -15,7 +15,7 @@ namespace Agora.Controllers
             _bannerService = bannerService;
         }
 
-        // GET /api/admin/banners
+        // GET /api/admin/banner
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -25,35 +25,23 @@ namespace Agora.Controllers
                 : Ok(banners);
         }
 
-        // GET /api/admin/banners/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
-        {
-            var banner = await _bannerService.GetBannerByIdAsync(id, cancellationToken);
-            return banner == null ? NotFound() : Ok(banner);
-        }
-
-        // POST /api/admin/banners
+        // POST /api/admin/banner
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateAndUpdateBannerDto dto, CancellationToken cancellationToken)
         {
             var banner = await _bannerService.CreateBannerAsync(dto, cancellationToken);
-            return !banner.IsSuccess
-                ? BadRequest(banner.Error?.Message)
-                : CreatedAtAction(nameof(GetById), new { id = banner.Value?.Id }, banner);
+            return banner.IsSuccess ? Ok(banner.Value) : BadRequest(banner.Error);
         }
 
-        // PUT /api/admin/banners/{id}
+        // PUT /api/admin/banner/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromForm] CreateAndUpdateBannerDto dto, CancellationToken cancellationToken)
         {
             var banner = await _bannerService.UpdateBannerAsync(id, dto, cancellationToken);
-            return !banner.IsSuccess
-                ? BadRequest(banner.Error?.Message)
-                : Ok(banner);
+            return banner.IsSuccess ? Ok(banner.Value) : NotFound(banner.Error);
         }
 
-        // DELETE /api/admin/banners/{id}
+        // DELETE /api/admin/banner/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
@@ -63,14 +51,12 @@ namespace Agora.Controllers
                 : NoContent();
         }
 
-        // PATCH /api/admin/banners/{id}/toggle-status
-        [HttpPut("{id}/toggle-status")]
+        // PUT /api/admin/banner/{id}
+        [HttpPut("status/{id}")]
         public async Task<IActionResult> ToggleStatus(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bannerService.ToggleBannerStatusAsync(id, cancellationToken);
-            return !result.IsSuccess
-                ? BadRequest(result.Error?.Message)
-                : Ok();
+            return result.IsSuccess ? Ok(new { success = true }) : NotFound(result.Error);
         }
     }
 }

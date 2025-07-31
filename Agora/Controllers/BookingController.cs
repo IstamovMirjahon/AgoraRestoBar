@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agora.Controllers
 {
     [ApiController]
-    [Route("api/bookings")]
+    [Route("api/booking")]
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
@@ -15,7 +15,20 @@ namespace Agora.Controllers
             _bookingService = bookingService;
         }
 
-        // POST /api/bookings
+        // GET /api/booking
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var result = await _bookingService.GetAllAsync(cancellationToken);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error?.Message);
+            }
+
+            return Ok(result.Value);
+        }
+
+        // POST /api/booking
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBookingDto dto, CancellationToken cancellationToken)
         {
@@ -28,20 +41,8 @@ namespace Agora.Controllers
             return Ok(new { message = "Buyurtmangiz qabul qilindi!" });
         }
 
-        // GET /api/bookings
-        [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
-        {
-            var result = await _bookingService.GetAllAsync(cancellationToken);
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result.Error?.Message);
-            }
-
-            return Ok(result.Value);
-        }
-        // PUT /api/bookings/{id}
-        [HttpPut("{id}")]
+        // PUT /api/booking/status/{id}
+        [HttpPut("status/{id}")]
         public async Task<IActionResult> ToggleConfirmation(Guid id, CancellationToken cancellationToken)
         {
             var result = await _bookingService.ToggleConfirmationAsync(id, cancellationToken);

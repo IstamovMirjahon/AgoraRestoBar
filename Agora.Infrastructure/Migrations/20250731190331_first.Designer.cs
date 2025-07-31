@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agora.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250630065454_fullofallmodels")]
-    partial class fullofallmodels
+    [Migration("20250731190331_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,70 +24,6 @@ namespace Agora.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Agora.Domain.Entities.About", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Abouts");
-                });
-
-            modelBuilder.Entity("Agora.Domain.Entities.AdminProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("Agora.Domain.Entities.Banner", b =>
                 {
@@ -106,7 +42,6 @@ namespace Agora.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -121,6 +56,9 @@ namespace Agora.Infrastructure.Migrations
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("VideoUrl")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -162,38 +100,6 @@ namespace Agora.Infrastructure.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("Agora.Domain.Entities.ContactInfo", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ContactInfos");
-                });
-
             modelBuilder.Entity("Agora.Domain.Entities.Menu", b =>
                 {
                     b.Property<Guid>("Id")
@@ -206,8 +112,13 @@ namespace Agora.Infrastructure.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
+                    b.Property<string>("DescriptionEn")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DescriptionRu")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DescriptionUz")
                         .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
@@ -217,7 +128,7 @@ namespace Agora.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("MenuCategory")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -226,6 +137,18 @@ namespace Agora.Infrastructure.Migrations
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("menuNameEn")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("menuNameRu")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("menuNameUz")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
