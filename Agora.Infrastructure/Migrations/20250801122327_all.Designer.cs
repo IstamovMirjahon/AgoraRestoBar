@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agora.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250731194303_second")]
-    partial class second
+    [Migration("20250801122327_all")]
+    partial class all
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,14 +41,15 @@ namespace Agora.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("MediaUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -56,9 +57,6 @@ namespace Agora.Infrastructure.Migrations
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("VideoUrl")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
