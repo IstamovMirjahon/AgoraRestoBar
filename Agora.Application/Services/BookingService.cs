@@ -48,6 +48,22 @@ namespace Agora.Application.Services
             return Result<List<BookingDto>>.Success(bookingDtos);
         }
 
+        public async Task<Result<List<BookingDto>>> GetUnconfirmedAllAsync(CancellationToken cancellationToken = default)
+        {
+            var bookings = await _bookingRepository.GetAllAsync();
+
+            if (bookings is null)
+            {
+                return Result<List<BookingDto>>.Failure(new Error("Booking.NotFound", "No bookings found."));
+            }
+            // Faqat tasdiqlanmaganlarni olish
+            var unconfirmedBookings = bookings
+                .Where(b => !b.IsConfirmed)
+                .OrderByDescending(b => b.CreateDate) 
+                .ToList();
+            var bookingDtos = _mapper.Map<List<BookingDto>>(unconfirmedBookings);
+            return Result<List<BookingDto>>.Success(bookingDtos);
+        }
 
         public async Task<Result<bool>> ToggleConfirmationAsync(Guid id, CancellationToken cancellationToken = default)
         {

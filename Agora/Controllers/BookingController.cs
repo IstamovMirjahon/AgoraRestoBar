@@ -52,5 +52,16 @@ namespace Agora.Controllers
 
             return Ok(new { message = "Booking confirmation status toggled successfully." });
         }
+        // GET /api/bookings/unconfirmed
+        [HttpGet("unconfirmed")]
+        public async Task<IActionResult> GetUnconfirmedAll(CancellationToken cancellationToken)
+        {
+            var result = await _bookingService.GetUnconfirmedAllAsync(cancellationToken);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error?.Message);
+            }
+            return Ok(result.Value);
+        }
     }
 }
