@@ -135,7 +135,6 @@ public class BannerService : IBannerService
             return Result<bool>.Failure(new Error("Banner.NotFound", "Banner topilmadi"));
 
         banner.IsActive = !banner.IsActive;
-        banner.UpdateDate = DateTime.UtcNow;
         _bannerRepository.Update(banner);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
