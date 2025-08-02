@@ -10,7 +10,7 @@ namespace Agora.Application.Mappings
         public BookingProfile()
         {
             CreateMap<Booking, BookingDto>();
-            CreateMap<BannerService, BannerDto>();
+            CreateMap<Banner, BannerDto>();
         }
     }
 }
