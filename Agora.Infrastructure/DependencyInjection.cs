@@ -3,8 +3,6 @@ using Agora.Application.Services;
 using Agora.Domain.Abstractions;
 using Agora.Infrastructure.Data;
 using Agora.Infrastructure.Repositories;
-using Agora.Infrastructure.Repositories.Admin;
-using Agora.Infrastructure.Repositories.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,12 +24,10 @@ namespace Agora.Infrastructure
             });
 
             services.AddScoped<IMenuRepository, MenuRepository>();
-            services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<IBannerRepository, BannerRepository>();
             services.AddScoped<IBookingRepository, BookingRepository>();
 
             services.AddScoped<IMenuService, MenuService>();
-            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBannerService, BannerService>();
             services.AddScoped<IBookingService, BookingService>();
 

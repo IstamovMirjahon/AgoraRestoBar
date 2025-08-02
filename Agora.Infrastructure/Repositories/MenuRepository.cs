@@ -2,9 +2,8 @@
 using Agora.Domain.Entities;
 using Agora.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
 
-namespace Agora.Infrastructure.Repositories.Auth
+namespace Agora.Infrastructure.Repositories
 {
     public class MenuRepository : IMenuRepository
     {

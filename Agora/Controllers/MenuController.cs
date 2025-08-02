@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Agora.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/menu")]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _service;

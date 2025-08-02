@@ -17,10 +17,7 @@ namespace Agora.Application.Services
             {
                 FullName = dto.FullName,
                 Phone = dto.Phone,
-                ReservationTime = DateTime.UtcNow,
-                IsConfirmed = false,
-                CreateDate = DateTime.UtcNow,
-                UpdateDate = DateTime.UtcNow
+                IsConfirmed = false
             };
 
             await _bookingRepository.AddAsync(booking, cancellationToken);

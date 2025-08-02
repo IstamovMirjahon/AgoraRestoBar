@@ -1,12 +1,12 @@
 ﻿namespace Agora.Application.DTOs
 {
-    public class BannerDto
+    public class ActiveBannerDto
     {
         public Guid Id { get; set; }
         public string Title { get; set; } = default!;
         public string Description { get; set; } = default!;
         public DateTime UpdateDate { get; set; }
         public string MediaUrl { get; set; } = default!;
-        public bool IsActive { get; set; }
+        public string MediaType { get; set; } = default!;
     }
 }
