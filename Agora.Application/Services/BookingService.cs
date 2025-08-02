@@ -13,6 +13,11 @@ namespace Agora.Application.Services
     {
         public async Task<Result<bool>> CreateAsync(CreateBookingDto dto, CancellationToken cancellationToken = default)
         {
+            if(string.IsNullOrWhiteSpace(dto.FullName) || string.IsNullOrWhiteSpace(dto.Phone))
+            {
+                return Result<bool>.Failure(new Error("ValidationError", "Full name and phone number must not be empty."));
+            }
+
             var booking = new Booking
             {
                 FullName = dto.FullName,

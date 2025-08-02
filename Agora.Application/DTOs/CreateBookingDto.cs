@@ -2,7 +2,7 @@
 {
     public class CreateBookingDto
     {
-        public string FullName { get; set; } = default!;
-        public string Phone { get; set; } = default!;
+        public required string FullName { get; set; }
+        public required string Phone { get; set; }
     }
 }
