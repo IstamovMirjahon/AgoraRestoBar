@@ -1,6 +1,8 @@
 ﻿using Agora.Application.Interfaces;
 using Agora.Infrastructure;
+using Agora.Infrastructure.Data;
 using Agora.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
 });
 
+
+
 // ✅ Kestrel HTTP port sozlovi
 builder.WebHost.UseUrls("http://0.0.0.0:5043");
 
@@ -40,6 +44,13 @@ builder.Services.AddInfrastructureRegisterServices(builder.Configuration);
 builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();  // Bu backend ishga tushganda migrationlarni avtomatik qo'llaydi
+}
+
 
 // ✅ Middlewarelar
 app.UseCors();
